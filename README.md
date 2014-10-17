@@ -28,6 +28,8 @@ Output:
 ``` d
     Hello!
 ```
+See also directory `tests/` and [wiki](https://github.com/o3o/endovena/wiki).
+
 ## Compiling
 You can use [dub](https://github.com/rejectedsoftware/dub): 
 ```
