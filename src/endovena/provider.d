@@ -15,12 +15,13 @@ interface Provider {
 }
 
 class ClassProvider(T): Provider {
-   private Container dj;
-   this(Container dejector) {
-      this.dj = dejector;
+   private Container container;
+   this(Container container) {
+      this.container = container;
    }
+
    Object get() {
-      return create!T(dj);
+      return create!T(container);
    }
 }
 
@@ -36,6 +37,19 @@ class FunctionProvider: Provider {
    }
 }
 
+class FactoryProvider: Provider {
+   private Container container;
+   private Object delegate(Container) provide;
+   this(Container container, Object delegate(Container) provide) {
+      this.container = container;
+      this.provide = provide;
+   }
+
+   Object get() {
+      return this.provide(container);
+   }
+}
+
 class InstanceProvider: Provider {
    private Object instance;
 
@@ -48,7 +62,7 @@ class InstanceProvider: Provider {
    }
 }
 
-private T create(T)(Container dj) {
+private T create(T)(Container container) {
    auto instance = cast(T) _d_newclass(T.classinfo);
    mixin(generateCtor!T);
    return instance;
@@ -102,10 +116,10 @@ private string generateCtor(T)() {
             code ~= "import " ~ moduleName!type ~ ";";
          }
       }
-      code ~= "instance.__ctor(";
 
+      code ~= "instance.__ctor(";
       foreach (type; ParameterTypeTuple!(T.__ctor)) {
-         code ~= "dj.get!(" ~ fullyQualifiedName!type ~ ")" ~
+         code ~= "container.get!(" ~ fullyQualifiedName!type ~ ")" ~
             ARGUMENT_SEPARATOR;
       }
       code = chomp(code, ARGUMENT_SEPARATOR) ~ ");";

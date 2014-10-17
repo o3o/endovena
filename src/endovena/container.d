@@ -41,39 +41,48 @@ class Container {
       this.scopes[key] = new Class();
    }
 
-   void register(C, R:Reuse = Transient)() {
-      this.register!(C, C, R);
+   void register(C, R: Reuse = Transient)() {
+      this.register!(C, C, R)("");
    }
 
-   void register(I, C, R:Reuse = Transient)() {
-      this.register!(I, R)(new ClassProvider!C(this));
+   void register(I, C, R: Reuse = Transient)() {
+      this.register!(I, R)(new ClassProvider!C(this), "");
    }
 
-   void register(I, R:Reuse = Transient)(Provider provider) {
+   void register(I, R: Reuse = Transient)(Provider provider) {
       this.register!(I, R)(provider, "");
    }
 
-   void register(I, R:Reuse = Transient)(Object delegate() provide) {
+   void register(I, R: Reuse = Transient)(Object delegate() provide) {
       this.register!(I, R)(new FunctionProvider(provide));
    }
 
-   void register(I, R:Reuse = Transient)(Object function() provide) {
+   void register(I, R: Reuse = Transient)(Object delegate(Container) factory) {
+      this.register!(I, R)(new FactoryProvider(this, factory));
+   }
+
+   void register(I, R: Reuse = Transient)(Object function() provide) {
       this.register!(I, R)(toDelegate(provide));
    }
 
-   void register(I, C, R:Reuse = Transient)(string name) {
+   void register(C, R: Reuse = Transient)(string name) {
+      this.register!(C, C, R)(name);
+   }
+
+   void register(I, C, R: Reuse = Transient)(string name) {
       this.register!(I, R)(new ClassProvider!C(this), name);
    }
 
-   void register(I, R:Reuse = Transient)(Provider provider, string name) {
+   void register(I, R: Reuse = Transient)(Provider provider, string name) {
       immutable key = getKey!I(name);
       if (key in this.bindings) {
          throw new Exception("Interface already bound");
       }
       this.bindings[key] = createBinding!(I, R)(provider, name);
    }
+   
 
-   Binding createBinding(I, S)(Provider provider, string name) {
+   private Binding createBinding(I, S)(Provider provider, string name) {
       auto resolutionReuse = this.scopes[fullyQualifiedName!S];
       return Binding(fullyQualifiedName!I
             , name

@@ -33,11 +33,13 @@ void I_can_resolve_mixed_array_of_singletons_and_no_scoped() {
    services.length.shouldEqual(2);
 }
 
-//@UnitTest
-//void I_can_inject_enumerable_as_dependency() {
-   //Container container = new Container;
-   //container.register!(IDependency, Dependency)();
-   //container.register!(IDependency, Dependency)("Foo2");
-   //container.register!(IService, ServiceWithArrayDependencies)();
-   //auto service = container.get!(IService)();
-//}
+@UnitTest
+void I_can_inject_enumerable_as_dependency() {
+   Container container = new Container;
+   container.register!(IDependency, Dependency)();
+   container.register!(IDependency, Dependency)("Foo2");
+   container.register!(IService, ServiceWithArrayDependencies)();
+
+   auto service = container.get!(IService)();
+   service.shouldNotBeNull;
+}
