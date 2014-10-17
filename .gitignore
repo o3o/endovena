@@ -1,0 +1,5 @@
+libendovena.a
+bin
+.dub
+*.o
+*.obj

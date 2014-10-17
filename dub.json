@@ -1,0 +1,8 @@
+{
+	"name": "endovena",
+	"description": "Simple D Dependency Injection Framework",
+	"license": "MIT",
+	"copyright": "Copyright © 2014, Orfeo Da Viá",
+	"authors": [ "Orfeo Da Viá" ],
+	"targetType": "library",
+}
