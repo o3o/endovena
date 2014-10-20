@@ -45,6 +45,10 @@ class Container {
       this.register!(C, C, R)("");
    }
 
+   void register(C, R: Reuse = Transient)(C instance) {
+      this.register!(C, R)(new InstanceProvider(instance));
+   }
+
    void register(I, C, R: Reuse = Transient)() {
       this.register!(I, R)(new ClassProvider!C(this), "");
    }
@@ -96,7 +100,7 @@ class Container {
          string requestedFQN = fullyQualifiedName!I;
          foreach (binding; bindings) {
             if (binding.fqn == requestedFQN) {
-               array~= get!I;
+               array ~= get!I;
             }
          }
          return array;
@@ -108,7 +112,7 @@ class Container {
    I get(I)(string name) {
       immutable key = getKey!I(name);
       auto binding = this.bindings[key];
-     return cast(I) binding.resolutionReuse.get(key, binding.provider);
+      return cast(I) binding.resolutionReuse.get(key, binding.provider);
    }
 
    I delegate() getDelegate(I)() {

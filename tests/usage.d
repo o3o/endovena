@@ -38,7 +38,6 @@ class GreeterWithMsg: IGreeter {
    string greet() { return _msg ~ "!"; }
 }
 
-
 @UnitTest
 void register_with_function() {
    Container container = new Container;
@@ -97,6 +96,17 @@ void register_with_InstanceProvider() {
 void given_service_with_ctor_Register_with_InstanceProvider_should_work() {
    Container container = new Container;
    auto p = new InstanceProvider(new GreeterWithMsg("a"));
+   container.register!(IGreeter, Singleton)(p);
+
+   auto service = container.get!IGreeter();
+   service.shouldNotBeNull;
+   service.greet.shouldEqual("a!");
+}
+@UnitTest
+void given_service_with_ctor_Register_instance_should_work() {
+   Container container = new Container;
+   auto g = new GreeterWithMsg("a");
+   auto p = new InstanceProvider(g);
    container.register!(IGreeter, Singleton)(p);
 
    auto service = container.get!IGreeter();
