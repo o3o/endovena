@@ -30,3 +30,40 @@ class ServiceWithArrayDependencies: IService {
       _foos = foos;
    }
 }
+
+
+interface ITransientService { }
+
+interface ISingletonService { }
+
+class ServiceWithMultipleCostructors {
+   this(ISingletonService singleton) {
+      _singletonService = singleton;
+   }
+
+   this(ITransientService transient) {
+      _transientService = transient;
+   }
+
+   private ITransientService _transientService;
+   @property ITransientService transientService()  { return _transientService; }
+
+   private ISingletonService _singletonService;
+   @property ISingletonService singletonService() { return _singletonService; }
+}
+
+class ServiceWithoutPublicConstructor {
+   private this() { }
+}
+
+class ServiceWithTwoParametersBothDependentOnSameService {
+   private ServiceWithDependency _one;
+   @property ServiceWithDependency one() { return _one; }
+   private AnotherServiceWithDependency _another;
+   @property AnotherServiceWithDependency another() { return _another; }
+
+   this(ServiceWithDependency one, AnotherServiceWithDependency another) {
+      _one = one;
+      _another = another;
+   }
+}

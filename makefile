@@ -64,7 +64,7 @@ DEFAULT: all
 BIN = bin
 DMD = dmd
 BASE_NAME = $(basename $(NAME))
-NAME_TEST = dejector-test 
+NAME_TEST = endovena-test 
 DSCAN = $(D_DIR)/Dscanner/bin/dscanner
 .PHONY: all clean clobber test run
 

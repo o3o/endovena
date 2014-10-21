@@ -6,6 +6,7 @@ import core.exception;
 import unit_threaded;
 
 import endovena;
+import tests.cut;
 
 class User {
    string name;
@@ -69,6 +70,15 @@ void register_with_FunctionProvider() {
    service.shouldNotBeNull;
    service.greet.shouldEqual("Hello");
 }
+@UnitTest
+void register_instance() {
+   Container container = new Container;
+   container.register!(GreeterWithMsg, Singleton)(new GreeterWithMsg("a"));
+
+   auto service = container.get!GreeterWithMsg();
+   service.shouldNotBeNull;
+   service.greet.shouldEqual("a!");
+}
 
 import std.functional : toDelegate;
 @UnitTest
@@ -102,6 +112,7 @@ void given_service_with_ctor_Register_with_InstanceProvider_should_work() {
    service.shouldNotBeNull;
    service.greet.shouldEqual("a!");
 }
+
 @UnitTest
 void given_service_with_ctor_Register_instance_should_work() {
    Container container = new Container;
@@ -112,4 +123,26 @@ void given_service_with_ctor_Register_instance_should_work() {
    auto service = container.get!IGreeter();
    service.shouldNotBeNull;
    service.greet.shouldEqual("a!");
+}
+
+@UnitTest
+void given_service_registred_by_instance_Get_interface_should_throw() {
+   Container container = new Container;
+   container.register!Greeter;
+   auto service = container.get!Greeter();
+   service.shouldNotBeNull;
+   container.get!IGreeter.shouldThrow!ResolveException;
+}
+
+@UnitTest
+void given_services_registred_by_instance_and_interface_Get_should_works() {
+   Container container = new Container; 
+   container.register!Greeter;
+   container.register!(IGreeter,Greeter);
+
+   auto service = container.get!Greeter();
+   service.shouldNotBeNull;
+   auto iservice = container.get!IGreeter();
+   iservice.shouldNotBeNull;
+   assert(iservice !is service);
 }

@@ -1,7 +1,7 @@
 module tests.array;
 
 import std.stdio;
-import core.exception;
+//import core.exception;
 import unit_threaded;
 
 import endovena;
@@ -45,11 +45,64 @@ void I_can_inject_array_as_dependency() {
    service.shouldNotBeNull;
 }
 
-//@UnitTest
-void given_only_one_named_registration_Get_should_resolve_the_default_service() {
+
+@UnitTest
+void i_can_resolve_array_of_named() {
    Container container = new Container;
-   container.register!(IDependency, Dependency)("Foo2");
-   auto dependency = container.get!(IDependency)();
-   dependency.shouldNotBeNull;
-   dependency.instanceof!(IService).shouldBeTrue;
+   container.register!(IService, ServiceA, Singleton)("A");
+   container.register!(IService, ServiceA, Singleton)("B");
+   container.register!(IService, ServiceA, Singleton)("C");
+   auto services = container.get!(IService[])();
+   services.length.shouldEqual(3);
+}
+@UnitTest
+void singleton_is_scoped_by_name() {
+   Container container = new Container;
+   container.register!(IService, ServiceA, Singleton)("A");
+   container.register!(IService, ServiceA, Singleton)("B");
+   container.register!(IService, ServiceA, Singleton)("C");
+   auto a1 = container.get!IService("A");
+   auto a2 = container.get!IService("A");
+   auto b1 = container.get!IService("B");
+   auto b2 = container.get!IService("B");
+   a2.shouldEqual(a1);
+   b2.shouldEqual(b1);
+   b1.shouldNotEqual(a1);
+   b2.shouldNotEqual(a2);
+   b2.shouldNotEqual(a1);
+}
+
+
+@UnitTest
+void i_can_resolve_transient_array_of_different_named_service() {
+   Container container = new Container;
+   container.register!(IService, ServiceA)("A");
+   container.register!(IService, ServiceB)("B");
+   auto services = container.get!(IService[])();
+   services.length.shouldEqual(2);
+   container.get!IService("A").instanceof!ServiceA.shouldBeTrue;
+   container.get!IService("B").instanceof!ServiceB.shouldBeTrue;
+   auto s1 = container.get!IService("A");
+   auto s2 = container.get!IService("A");
+   s2.shouldNotEqual(s1);
+}
+
+@UnitTest
+void i_can_resolve_singleton_array_of_different_named_service() {
+   Container container = new Container;
+   container.register!(IService, ServiceA, Singleton)("A");
+   container.register!(IService, ServiceB, Singleton)("B");
+   auto services = container.get!(IService[])();
+   services.length.shouldEqual(2);
+   container.get!IService("A").instanceof!ServiceA.shouldBeTrue;
+   container.get!IService("B").instanceof!ServiceB.shouldBeTrue;
+   auto s1 = container.get!IService("A");
+   auto s2 = container.get!IService("A");
+   s2.shouldEqual(s1);
+}
+
+@UnitTest
+void resolving_array_of_not_registered_services_should_throw() {
+Container container = new Container;
+   container.get!(IService[]).shouldThrow!ResolveException;
 }

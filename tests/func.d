@@ -16,6 +16,8 @@ void get_delegate_should_produce_delegateOfService() {
    func.instanceof!(IService delegate()).shouldBeTrue;
    func().instanceof!(IService).shouldBeTrue;
 }
+
+
 //public void Resolving_as_Func_should_throw_for_not_registered_service()
 @UnitTest
 void func_itself_is_transient() {

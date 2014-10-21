@@ -39,8 +39,8 @@ class FunctionProvider: Provider {
 
 class FactoryProvider: Provider {
    private Container container;
-   private Object delegate(Container) provide;
-   this(Container container, Object delegate(Container) provide) {
+   private Object function(Container) provide;
+   this(Container container, Object function(Container) provide) {
       this.container = container;
       this.provide = provide;
    }

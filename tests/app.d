@@ -16,6 +16,7 @@ int main(string[] args) {
          , tests.usage
          , tests.func
          , tests.array
-         , tests.basic_register
+         , tests.array
+         //, tests.named
          ) (args);
 }

@@ -39,6 +39,7 @@ void Register_client_and_service_as_types_and_then_resolve() {
       .instanceof!SomeService
       .shouldBeTrue;
 }
+
 @UnitTest
 void register_client_with_factory_delegate() {
    Container container = new Container;
