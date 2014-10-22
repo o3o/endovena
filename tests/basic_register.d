@@ -24,7 +24,7 @@ class SomeClient : IClient {
 }
 
 @UnitTest
-void Register_client_and_service_as_types_and_then_resolve() {
+void register_as_types() {
    Container container = new Container;
 
    container.register!(IService, SomeService)();
