@@ -65,7 +65,7 @@ class Container {
       this.register!(I, R)(new FunctionProvider(provide), "");
    }
 
-   void register(I, R: Reuse = Transient)(Object function(Container) factory) {
+   void register(I, R: Reuse = Transient)(Object delegate(Container) factory) {
       this.register!(I, R)(new FactoryProvider(this, factory), "");
    }
 
@@ -86,6 +86,15 @@ class Container {
          throw new RegistrationException("Interface already bound", fullyQualifiedName!I);
       }
       this.bindings ~= createBinding!(I, R)(provider, name);
+   }
+
+   void register(I, R: Reuse = Transient)(Object delegate() provide, string name) {
+      this.register!(I, R)(new FunctionProvider(provide), name);
+   }
+
+   void register(I, R: Reuse = Transient)(Object delegate(Container) factory,
+         string name) {
+      this.register!(I, R)(new FactoryProvider(this, factory), name);
    }
 
    private bool exists(I)(string name) {

@@ -106,6 +106,21 @@ void i_can_resolve_singleton_array_of_different_named_service() {
    auto s2 = container.get!IService("A");
    s2.shouldEqual(s1);
 }
+@UnitTest
+void i_can_resolve_array_of_different_named_service() {
+   Container container = new Container;
+   container.register!(IService)(c => new ServiceA(), "A");
+   container.register!(IService)(c => new ServiceB, "B1");
+   container.register!(IService)(c => new ServiceB, "B2");
+   auto services = container.get!(IService[])();
+   services.length.shouldEqual(3);
+   container.get!IService("A").instanceof!ServiceA.shouldBeTrue;
+   container.get!IService("B1").instanceof!ServiceB.shouldBeTrue;
+   container.get!IService("B2").instanceof!ServiceB.shouldBeTrue;
+   auto b1 = container.get!IService("B1");
+   auto b2 = container.get!IService("B2");
+   b2.shouldNotEqual(b1);
+}
 
 @UnitTest
 void resolving_array_of_not_registered_services_should_throw() {
