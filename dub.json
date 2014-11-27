@@ -4,5 +4,6 @@
 	"license": "Boost",
 	"copyright": "Copyright © 2014, Orfeo Da Viá",
 	"authors": [ "Orfeo Da Viá" ],
-	"targetType": "library",
+   "targetPath": "bin",
+	"targetType": "library"
 }
