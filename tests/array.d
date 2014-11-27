@@ -39,10 +39,15 @@ void I_can_inject_array_as_dependency() {
    Container container = new Container;
    container.register!(IDependency, Dependency)();
    container.register!(IDependency, Dependency)("Foo2");
+   container.register!(IDependency, Dependency)("Foo3");
    container.register!(IService, ServiceWithArrayDependencies)();
 
    auto service = container.get!(IService)();
    service.shouldNotBeNull;
+
+   ServiceWithArrayDependencies sA = cast(ServiceWithArrayDependencies)(service); 
+   sA.foos.length.shouldEqual(3);
+   sA.foos[0].instanceof!Dependency.shouldBeTrue;
 }
 
 
@@ -55,6 +60,7 @@ void i_can_resolve_array_of_named() {
    auto services = container.get!(IService[])();
    services.length.shouldEqual(3);
 }
+
 @UnitTest
 void singleton_is_scoped_by_name() {
    Container container = new Container;
