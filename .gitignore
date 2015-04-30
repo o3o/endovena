@@ -3,3 +3,4 @@ bin
 .dub
 *.o
 *.obj
+tags

@@ -1,9 +1,26 @@
 {
-	"name": "endovena",
-	"description": "Simple D Dependency Injection Framework",
-	"license": "Boost",
-	"copyright": "Copyright © 2014, Orfeo Da Viá",
-	"authors": [ "Orfeo Da Viá" ],
+   "name": "endovena",
+   "description": "Simple D Dependency Injection Framework",
+   "license": "Boost",
+   "copyright": "Copyright © 2014, Orfeo Da Viá",
+   "authors": [ "Orfeo Da Viá" ],
    "targetPath": "bin",
-	"targetType": "library"
+   "targetType": "library",
+   "configurations": [
+      {
+         "name": "library",
+         "targetType": "library"
+      },
+      {
+         "name": "unittest",
+         "targetType": "executable",
+         "targetName": "test-runner",
+         "sourcePaths": ["tests", "src"],
+         "mainSourceFile": "tests/app.d",
+         "excludedSourceFiles": ["src/app.d"],
+         "dependencies": {
+            "unit-threaded": "~>0.4.7"
+         }
+      }
+   ]
 }

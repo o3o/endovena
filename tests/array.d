@@ -78,7 +78,6 @@ void singleton_is_scoped_by_name() {
    b2.shouldNotEqual(a1);
 }
 
-
 @UnitTest
 void i_can_resolve_transient_array_of_different_named_service() {
    Container container = new Container;
@@ -106,6 +105,7 @@ void i_can_resolve_singleton_array_of_different_named_service() {
    auto s2 = container.get!IService("A");
    s2.shouldEqual(s1);
 }
+
 @UnitTest
 void i_can_resolve_array_of_different_named_service() {
    Container container = new Container;

@@ -39,7 +39,8 @@ class Container {
 
    void bindReuse(Class)() {
       immutable key = fullyQualifiedName!Class;
-      if(key in this.scopes) {
+      assert(key.length > 0);
+      if (key in this.scopes) {
          throw new Exception("Scope already bound");
       }
       this.scopes[key] = new Class();
@@ -69,7 +70,7 @@ class Container {
       this.register!(I, R)(new FactoryProvider(this, factory), "");
    }
 
-   void register(I, R: Reuse = Transient)(Object function() provide) {
+   void registerFunc(I, R: Reuse = Transient)(Object function() provide) {
       this.register!(I, R)(toDelegate(provide));
    }
 

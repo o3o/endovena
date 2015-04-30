@@ -42,10 +42,18 @@ class GreeterWithMsg: IGreeter {
 @UnitTest
 void register_with_function() {
    Container container = new Container;
-   // doesn't work
-   //container.register!(IGreeter, Singleton)(() => new Greeter());
 
-   container.register!(IGreeter, Singleton)(function () => new Greeter());
+   container.registerFunc!(IGreeter, Singleton)(function () => new Greeter());
+   auto service = container.get!IGreeter();
+   service.shouldNotBeNull;
+   service.greet.shouldEqual("Hello");
+}
+
+@UnitTest
+void register_with_function_lambda() {
+   Container container = new Container;
+   container.registerFunc!(IGreeter, Singleton)(() => new Greeter());
+
    auto service = container.get!IGreeter();
    service.shouldNotBeNull;
    service.greet.shouldEqual("Hello");
@@ -61,6 +69,25 @@ void register_with_delegate() {
 }
 
 @UnitTest
+void register_with_delegate_short() {
+   Container container = new Container;
+   container.register!(IGreeter, Singleton)( { return new Greeter(); } );
+   auto service = container.get!IGreeter();
+   service.shouldNotBeNull;
+   service.greet.shouldEqual("Hello");
+}
+
+@UnitTest
+void register_with_delegate_lambda() {
+   Container container = new Container;
+   container.register!(IGreeter, Singleton)(() => new Greeter());
+
+   auto service = container.get!IGreeter();
+   service.shouldNotBeNull;
+   service.greet.shouldEqual("Hello");
+}
+
+@UnitTest
 void register_with_FunctionProvider() {
    Container container = new Container;
    auto p = new FunctionProvider( () => new Greeter());
@@ -70,6 +97,7 @@ void register_with_FunctionProvider() {
    service.shouldNotBeNull;
    service.greet.shouldEqual("Hello");
 }
+
 @UnitTest
 void register_instance() {
    Container container = new Container;
@@ -78,17 +106,6 @@ void register_instance() {
    auto service = container.get!GreeterWithMsg();
    service.shouldNotBeNull;
    service.greet.shouldEqual("a!");
-}
-
-import std.functional : toDelegate;
-@UnitTest
-void register_with_toDelegate() {
-   Container container = new Container;
-   container.register!(IGreeter, Singleton)(toDelegate( () => new Greeter()  ));
-
-   auto service = container.get!IGreeter();
-   service.shouldNotBeNull;
-   service.greet.shouldEqual("Hello");
 }
 
 @UnitTest
