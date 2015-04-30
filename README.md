@@ -1,5 +1,5 @@
 # endovena
-[![Build Status](https://travis-ci.org/o3o/endovena.svg)](https://travis-ci.org/o3o/endovena)
+[![Build Status](https://travis-ci.org/o3o/endovena.svg?branch=master)](https://travis-ci.org/o3o/endovena)
 
 Simple dependency injection framework for D. Based on [Jakub Stasiak](https://github.com/jstasiak/dejector) similar work. 
 
