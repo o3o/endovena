@@ -152,5 +152,5 @@ void given_only_named_registrations_Get_without_name_should_throw() {
    container.register!(IService, Service)("one");
    container.register!(IService, AnotherService)("another");
 
-   container.get!IService().shouldThrow!ResolveException;;
+   container.get!IService().shouldThrow!ResolveException;
 }

@@ -6,6 +6,7 @@ import tests.usage;
 import tests.func;
 import tests.array;
 import tests.basic_register;
+import tests.template_register;
 
 import endovena;
 
@@ -17,6 +18,7 @@ int main(string[] args) {
          , tests.func
          , tests.array
          , tests.basic_register
+         , tests.template_register
          //, tests.named
          ) (args);
 }

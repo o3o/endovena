@@ -39,10 +39,15 @@ void I_can_inject_array_as_dependency() {
    Container container = new Container;
    container.register!(IDependency, Dependency)();
    container.register!(IDependency, Dependency)("Foo2");
+   container.register!(IDependency, Dependency)("Foo3");
    container.register!(IService, ServiceWithArrayDependencies)();
 
    auto service = container.get!(IService)();
    service.shouldNotBeNull;
+
+   ServiceWithArrayDependencies sA = cast(ServiceWithArrayDependencies)(service); 
+   sA.foos.length.shouldEqual(3);
+   sA.foos[0].instanceof!Dependency.shouldBeTrue;
 }
 
 @UnitTest
