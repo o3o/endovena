@@ -45,7 +45,6 @@ void I_can_inject_array_as_dependency() {
    service.shouldNotBeNull;
 }
 
-
 @UnitTest
 void i_can_resolve_array_of_named() {
    Container container = new Container;
@@ -55,6 +54,7 @@ void i_can_resolve_array_of_named() {
    auto services = container.get!(IService[])();
    services.length.shouldEqual(3);
 }
+
 @UnitTest
 void singleton_is_scoped_by_name() {
    Container container = new Container;
@@ -72,16 +72,18 @@ void singleton_is_scoped_by_name() {
    b2.shouldNotEqual(a1);
 }
 
-
 @UnitTest
 void i_can_resolve_transient_array_of_different_named_service() {
    Container container = new Container;
    container.register!(IService, ServiceA)("A");
    container.register!(IService, ServiceB)("B");
+   
    auto services = container.get!(IService[])();
    services.length.shouldEqual(2);
+
    container.get!IService("A").instanceof!ServiceA.shouldBeTrue;
    container.get!IService("B").instanceof!ServiceB.shouldBeTrue;
+
    auto s1 = container.get!IService("A");
    auto s2 = container.get!IService("A");
    s2.shouldNotEqual(s1);
@@ -100,10 +102,11 @@ void i_can_resolve_singleton_array_of_different_named_service() {
    auto s2 = container.get!IService("A");
    s2.shouldEqual(s1);
 }
+
 @UnitTest
 void i_can_resolve_array_of_different_named_service() {
    Container container = new Container;
-   container.register!(IService)(c => new ServiceA(), "A");
+   container.register!(IService)(c => new ServiceA, "A");
    container.register!(IService)(c => new ServiceB, "B1");
    container.register!(IService)(c => new ServiceB, "B2");
    auto services = container.get!(IService[])();

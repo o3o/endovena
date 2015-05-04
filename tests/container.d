@@ -7,6 +7,7 @@ import core.exception;
 import endovena;
 import tests.utils;
 import tests.cut;
+
 //10
 @UnitTest
 void get_service_should_return_registered_implementation() {
@@ -16,6 +17,7 @@ void get_service_should_return_registered_implementation() {
    auto service = container.get!IService;
    service.instanceof!Service.shouldBeTrue;
 }
+
 //21
 @UnitTest
 void given_named_and_default_registerations_Get_without_name_returns_default() {
@@ -26,6 +28,7 @@ void given_named_and_default_registerations_Get_without_name_returns_default() {
    auto service = container.get!IService();
    service.instanceof!Service.shouldBeTrue;
 }
+
 //31
 @UnitTest
 void given_named_and_default_registerations_Get_with_name_should_return_correspondingly_named_service() {
@@ -64,7 +67,6 @@ void get_non_registered_service_should_throw() {
 }
 
 //77  void Registering_with_interface_for_service_implementation_should_throw()
-
 
 // 86
 @UnitTest

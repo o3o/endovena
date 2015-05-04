@@ -15,7 +15,7 @@ interface IClient {
    @property IService service();
 }
 
-class SomeClient : IClient {
+class SomeClient: IClient {
    public this(IService service) {
       _service = service;
    }
@@ -63,7 +63,7 @@ void register_client_with_factory_delegate() {
 }
 
 @UnitTest
-void Specify_how_to_reuse_resolved_objects() {
+void specify_how_to_reuse_resolved_objects() {
    Container container = new Container();
 
    /*
