@@ -2,11 +2,43 @@
 # Common part
 ###############
 DEFAULT: all
-BIN = bin
+
+ifndef BIN
+BIN=bin
+endif
+
 DC = dmd
+STATIC_LIB_EXT = .a
+ifeq ($(TARGET),lib)
+	NAME_DEBUG = $(STATIC_LIBNAME)d$(STATIC_LIB_EXT)
+	NAME_REL = $(STATIC_LIBNAME)$(STATIC_LIB_EXT)
+else
+	NAME_DEBUG = $(NAME)d
+	NAME_REL = $(NAME)
+endif
+
+ifeq ($(DC),gdc)
+	COMPILER=gdc
+	STATIC_LIBNAME=$(NAME)-$(COMPILER)
+	WARN_AS_ERR=-Werror
+	WARN_AS_MSG=-w
+	DBG_CODE=-fdebug
+	OUTPUT=-o
+OPTIMIZE=-O2
+	LINKERFLAG=-Xlinker
+else
+	COMPILER=dmd
+	STATIC_LIBNAME=$(NAME)
+	WARN_AS_MSG=-wi
+	WARN_AS_ERR=-w
+	#compile in debug code
+	DBG_CODE=-debug
+	OUTPUT=-of
+	OPTIMIZE=-O
+	LINKERFLAG=-L
+endif
+
 NAME_TEST = test-runner
-NAME_DEBUG = $(NAME)d
-NAME_REL = $(NAME)
 
 DSCAN = $(D_DIR)/Dscanner/bin/dscanner
 MKDIR = mkdir -p
@@ -32,11 +64,13 @@ builddir:
 	@$(MKDIR) $(BIN)
 
 $(BIN)/$(NAME_DEBUG): $(SRC) $(LIB)| builddir
-	$(DC) $^ $(DCFLAGS) $(DCFLAGS_IMPORT) $(DCFLAGS_LINK) $(VERSION_FLAG) -of$@
+	$(DC) $^ $(DCFLAGS) $(DCFLAGS_IMPORT) $(DCFLAGS_LINK) $(VERSION_FLAG) $(OUTPUT)$@
 
 $(BIN)/$(NAME_REL): $(SRC) $(LIB)| builddir
 	$(DC) $^ $(DCFLAGS_REL) $(DCFLAGS_IMPORT) $(DCFLAGS_LINK) $(VERSION_FLAG) -of$@
+ifneq ($(TARGET), "lib")
 	$(UPX) $@
+endif
 
 run: all
 	$(BIN)/$(NAME_DEBUG)
@@ -58,11 +92,11 @@ pkgdir:
 	$(MKDIR) pkg
 
 pkg: $(PKG) | pkgdir
-	tar -jcf pkg/$(NAME)-$(VERSION).tar.bz2 $^
-	zip pkg/$(NAME)-$(VERSION).zip $^
+	tar -jcf pkg/$(NAME)-$(PROJECT_VERSION).tar.bz2 $^
+	zip pkg/$(NAME)-$(PROJECT_VERSION).zip $^
 
 pkgsrc: $(PKG_SRC) | pkgdir
-	tar -jcf pkg/$(NAME)-$(VERSION)-src.tar.bz2 $^
+	tar -jcf pkg/$(NAME)-$(PROJECT_VERSION)-src.tar.bz2 $^
 
 tags: $(SRC)
 	$(DSCAN) --ctags $^ > tags
@@ -87,24 +121,28 @@ clobber: clean
 	$(RM) $(BIN)/$(NAME_DEBUG)
 
 ver:
-	@echo $(VERSION)
+	@echo $(PROJECT_VERSION)
 
 var:
 	@echo
 	@echo NAME:       $(NAME)
-	@echo NAME_TEST:  $(NAME_TEST)
-	@echo NAME_DEBUG: $(NAME_REL)
+	@echo NAME_DEBUG: $(NAME_DEBUG)
 	@echo NAME_REL:   $(NAME_REL)
+	@echo TARGET:     $(TARGET)
+	@echo PRJ_VER:    $(PROJECT_VERSION)
 	@echo
 	@echo D_DIR:$(D_DIR)
+	@echo BIN: $(BIN)
 	@echo SRC:$(SRC)
 	@echo DCFLAGS_IMPORT: $(DCFLAGS_IMPORT)
 	@echo LIB: $(LIB)
 	@echo
+	@echo DC:      $(DC)
 	@echo DCFLAGS: $(DCFLAGS)
 	@echo DCFLAGS_LINK: $(DCFLAGS_LINK)
 	@echo VERSION: $(VERSION_FLAG)
 	@echo
+	@echo ==== test ===
 	@echo NAME_TEST: $(NAME_TEST)
 	@echo SRC_TEST: $(SRC_TEST)
 	@echo DCFLAGS_IMPORT_TEST: $(DCFLAGS_IMPORT_TEST)

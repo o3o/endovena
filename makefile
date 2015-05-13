@@ -1,27 +1,33 @@
-NAME = libendovena.a
+NAME = libendovena
 VERSION = 0.3.0
 
 ROOT_SOURCE_DIR = src
-SRC = $(getSources) 
-SRC_TEST = $(filter-out $(ROOT_SOURCE_DIR)/app.d, $(SRC)) 
+SRC = $(getSources)
+TARGET = "lib"
+SRC_TEST = $(filter-out $(ROOT_SOURCE_DIR)/app.d, $(SRC))
 SRC_TEST += $(wildcard tests/*.d)
 
 # Compiler flag
 # -----------
-DCFLAGS += -lib
-DCFLAGS += -debug #compile in debug code
+ifeq ($(TARGET), "lib")
+	DCFLAGS += -lib
+	DCFLAGS_REL += -lib
+endif
+
+DCFLAGS += $(DBG_CODE) #compile in debug code
+DCFLAGS += $(OPTIMIZE) #optimize
 #DCFLAGS += -g # add symbolic debug info
-#DCFLAGS += -w # warnings as errors (compilation will halt)
-DCFLAGS += -wi # warnings as messages (compilation will continue)
+DCFLAGS += $(WARN_AS_ERR) # warnings as errors (compilation will halt)
+#DCFLAGS += $(WARN_AS_MSG) # warnings as messages (compilation will continue)
 
 # release flags
-DCFLAGS_REL = -O -wi -release -inline -boundscheck=off
+DCFLAGS_REL += -O -wi -release -inline -boundscheck=off
 
 DCFLAGS_TEST += -unittest
 # Linker flag
 # -----------
-# DCFLAGS_LINK += 
-# DCFLAGS_LINK += -L-L/usr/lib/
+# DCFLAGS_LINK +=
+# DCFLAGS_LINK += $(LINKERFLAG)-L/usr/lib/
 
 # Version flag
 # -----------
