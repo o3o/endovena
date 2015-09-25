@@ -1,5 +1,5 @@
 NAME = endovena
-PROJECT_VERSION = 0.3.0
+PROJECT_VERSION = 0.3.1
 
 ROOT_SOURCE_DIR = src
 BIN=bin
