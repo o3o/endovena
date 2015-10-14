@@ -55,8 +55,8 @@ void resolving_singleton_twice_should_return_same_instances() {
    container.register!(IService, Service, Singleton);
    auto one = container.get!IService;
    auto another = container.get!IService;
-   assert(one is another);
-   another.shouldEqual(one);
+   shouldBeTrue(one is another);
+   shouldBeTrue(one == another);
 }
 
 //68
@@ -104,10 +104,10 @@ void given_two_resolved_service_instances_Injected_singleton_dependency_should_b
    container.register!(ServiceWithDependency);
    auto one = container.get!ServiceWithDependency;
    auto another = container.get!ServiceWithDependency;
-   one.dependency.shouldEqual(another.dependency);
+   shouldBeTrue(one.dependency is another.dependency);
 }
 
-//155: 
+//155:
 void when_resolving_service_with_two_dependencies_dependent_on_singleton_Then_same_singleton_instance_should_be_used() {
    Container container = new Container;
    container.register!(ServiceWithTwoParametersBothDependentOnSameService);
@@ -116,7 +116,7 @@ void when_resolving_service_with_two_dependencies_dependent_on_singleton_Then_sa
    container.register!(IDependency, Dependency, Singleton);
 
    auto service = container.get!(ServiceWithTwoParametersBothDependentOnSameService);
-   service.one.dependency.shouldEqual(service.another.dependency);
+   shouldBeTrue(service.one.dependency is service.another.dependency);
 }
 
 //215

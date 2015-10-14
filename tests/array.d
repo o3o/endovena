@@ -45,7 +45,7 @@ void I_can_inject_array_as_dependency() {
    auto service = container.get!(IService)();
    service.shouldNotBeNull;
 
-   ServiceWithArrayDependencies sA = cast(ServiceWithArrayDependencies)(service); 
+   ServiceWithArrayDependencies sA = cast(ServiceWithArrayDependencies)(service);
    sA.foos.length.shouldEqual(3);
    sA.foos[0].instanceof!Dependency.shouldBeTrue;
 }
@@ -66,15 +66,16 @@ void singleton_is_scoped_by_name() {
    container.register!(IService, ServiceA, Singleton)("A");
    container.register!(IService, ServiceA, Singleton)("B");
    container.register!(IService, ServiceA, Singleton)("C");
-   auto a1 = container.get!IService("A");
-   auto a2 = container.get!IService("A");
-   auto b1 = container.get!IService("B");
-   auto b2 = container.get!IService("B");
-   a2.shouldEqual(a1);
-   b2.shouldEqual(b1);
-   b1.shouldNotEqual(a1);
-   b2.shouldNotEqual(a2);
-   b2.shouldNotEqual(a1);
+   IService a1 = container.get!IService("A");
+   IService a2 = container.get!IService("A");
+   IService b1 = container.get!IService("B");
+   IService b2 = container.get!IService("B");
+
+   shouldBeTrue(a1 is a2);
+   shouldBeTrue(b1 is b2);
+   shouldBeFalse(b1 is a1);
+   shouldBeFalse(b2 is a2);
+   shouldBeFalse(b2 is a1);
 }
 
 @UnitTest
@@ -82,7 +83,7 @@ void i_can_resolve_transient_array_of_different_named_service() {
    Container container = new Container;
    container.register!(IService, ServiceA)("A");
    container.register!(IService, ServiceB)("B");
-   
+
    auto services = container.get!(IService[])();
    services.length.shouldEqual(2);
 
@@ -91,7 +92,7 @@ void i_can_resolve_transient_array_of_different_named_service() {
 
    auto s1 = container.get!IService("A");
    auto s2 = container.get!IService("A");
-   s2.shouldNotEqual(s1);
+   shouldBeFalse(s1 == s2);
 }
 
 @UnitTest
@@ -105,7 +106,8 @@ void i_can_resolve_singleton_array_of_different_named_service() {
    container.get!IService("B").instanceof!ServiceB.shouldBeTrue;
    auto s1 = container.get!IService("A");
    auto s2 = container.get!IService("A");
-   s2.shouldEqual(s1);
+   shouldBeTrue(s1 is s2);
+   shouldBeTrue(s1 == s2);
 }
 
 @UnitTest
@@ -121,7 +123,8 @@ void i_can_resolve_array_of_different_named_service() {
    container.get!IService("B2").instanceof!ServiceB.shouldBeTrue;
    auto b1 = container.get!IService("B1");
    auto b2 = container.get!IService("B2");
-   b2.shouldNotEqual(b1);
+   shouldBeFalse(b1 is b2);
+   shouldBeFalse(b1 == b2);
 }
 
 @UnitTest

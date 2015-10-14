@@ -25,8 +25,9 @@ void func_itself_is_transient() {
    container.register!(IService, Service);
    auto one = container.get!IService;
    auto another = container.get!IService;
-   one.shouldNotEqual(another);
+   shouldBeFalse(one is another);
 }
+
 @UnitTest
 void given_registered_transient_Resolved_Func_should_create_new_instances() {
    auto container = new Container;
@@ -37,7 +38,7 @@ void given_registered_transient_Resolved_Func_should_create_new_instances() {
    one.shouldNotBeNull;
    auto another = func();
    another.shouldNotBeNull;
-   one.shouldNotEqual(another);
+   shouldBeFalse(one is another);
 }
 
 @UnitTest
@@ -48,5 +49,5 @@ void Given_registered_singleton_Resolved_Func_should_create_same_instances() {
 
    auto one = func();
    auto another = func();
-   one.shouldEqual(another);
+   shouldBeTrue(one is another);
 }

@@ -59,7 +59,7 @@ void register_client_with_factory_delegate() {
 
    IService s1 = container.get!IService;
    IService s2 = container.get!IService;
-   s1.shouldEqual(s2);
+   shouldBeTrue(s1 is s2);
 }
 
 @UnitTest
