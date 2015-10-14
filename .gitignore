@@ -4,3 +4,5 @@ bin
 *.o
 *.obj
 tags
+
+src/endovena/packageVersion.d

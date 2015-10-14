@@ -5,6 +5,7 @@ ROOT_SOURCE_DIR = src
 BIN=bin
 SRC = $(getSources)
 TARGET = lib
+#COMPRESS=yes
 SRC_TEST = $(filter-out $(ROOT_SOURCE_DIR)/app.d, $(SRC))
 SRC_TEST += $(wildcard tests/*.d)
 
@@ -22,7 +23,7 @@ DCFLAGS += $(WARN_AS_ERR) # warnings as errors (compilation will halt)
 #DCFLAGS += $(WARN_AS_MSG) # warnings as messages (compilation will continue)
 
 # release flags
-DCFLAGS_REL += -O -wi -release -inline -boundscheck=off
+DCFLAGS_REL += $(OPTIMIZE) $(WARN_AS_MSG) -release -inline -boundscheck=off
 
 DCFLAGS_TEST += -unittest
 # Linker flag
@@ -50,6 +51,7 @@ PKG_SRC = $(PKG) $(SRC) makefile
 # -----------
 
 # unit-threaded
+# https://github.com/atilaneves/unit-threaded
 # -----------
 LIB_TEST += $(D_DIR)/unit-threaded/libunit-threaded.a
 DCFLAGS_IMPORT_TEST += -I$(D_DIR)/unit-threaded/source
@@ -60,6 +62,7 @@ DCFLAGS_IMPORT_TEST += -I$(D_DIR)/unit-threaded/source
 #DCFLAGS_IMPORT += -I$(D_DIR)/dunit/source
 
 # dmocks-revived
+# https://github.com/QAston/DMocks-revived
 # -----------
 #LIB_TEST += $(D_DIR)/DMocks-revived/libdmocks-revived.a
 #DCFLAGS_IMPORT_TEST += -I$(D_DIR)/DMocks-revived
@@ -130,11 +133,11 @@ builddir:
 	@$(MKDIR) $(BIN)
 
 $(BIN)/$(NAME_DEBUG): $(SRC) $(LIB)| builddir
-	$(DC) $^ $(DCFLAGS) $(DCFLAGS_IMPORT) $(DCFLAGS_LINK) $(VERSION_FLAG) $(OUTPUT)$@
+	$(DC) $^ $(VERSION_FLAG) $(DCFLAGS) $(DCFLAGS_IMPORT) $(DCFLAGS_LINK) $(DCFLAGS_J) $(OUTPUT)$@
 
 $(BIN)/$(NAME_REL): $(SRC) $(LIB)| builddir
-	$(DC) $^ $(DCFLAGS_REL) $(DCFLAGS_IMPORT) $(DCFLAGS_LINK) $(VERSION_FLAG) -of$@
-ifneq ($(TARGET),lib)
+	$(DC) $^ $(VERSION_FLAG) $(DCFLAGS_REL) $(DCFLAGS_IMPORT) $(DCFLAGS_LINK) $(DCFLAGS_J) $(OUTPUT)$@
+ifdef COMPRESS
 	$(UPX) $@
 endif
 
@@ -195,6 +198,7 @@ var:
 	@echo NAME_DEBUG: $(NAME_DEBUG)
 	@echo NAME_REL:   $(NAME_REL)
 	@echo TARGET:     $(TARGET)
+	@echo COMPRESS:   $(COMPRESS)
 	@echo PRJ_VER:    $(PROJECT_VERSION)
 	@echo
 	@echo D_DIR: $(D_DIR)
