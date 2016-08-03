@@ -1,0 +1,21 @@
+name "endovena"
+version "0.3.1+commit.3.g54f30d8"
+description "Simple D Dependency Injection Framework"
+authors "Orfeo Da Viá"
+copyright "Copyright © 2014, Orfeo Da Viá"
+license "Boost"
+targetType "library"
+targetPath "bin"
+
+configuration "library" {
+	targetType "library"
+}
+
+configuration "unittest" {
+	targetName "test-runner"
+	mainSourceFile "tests/app.d"
+	targetType "executable"
+	sourcePaths "tests" 
+	preBuildCommands "dub run unit-threaded -c gen_ut_main -- -f tests/app.d"
+	dependency "unit-threaded" version="~>0.6.25"
+}
