@@ -1,5 +1,4 @@
 name "endovena"
-version "0.3.1+commit.3.g54f30d8"
 description "Simple D Dependency Injection Framework"
 authors "Orfeo Da Viá"
 copyright "Copyright © 2014, Orfeo Da Viá"
