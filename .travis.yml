@@ -4,7 +4,7 @@ sudo: false
 matrix:
   include:
     - d: dmd-2.071.0
-    - d: ldc-1.1.0
+    - d: ldc-1.0.0
 
 script:
   - dub test --compiler=${DC}
