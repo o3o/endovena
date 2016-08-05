@@ -1,7 +1,13 @@
 # endovena
+[![Dub version](https://img.shields.io/dub/v/endovena.svg)](https://code.dlang.org/packages/endovena)
 [![Build Status](https://travis-ci.org/o3o/endovena.svg?branch=master)](https://travis-ci.org/o3o/endovena)
+[![Dub download Status](https://img.shields.io/dub/dt/endovena.svg)](https://code.dlang.org/packages/endovena)
 
-Simple dependency injection framework for D. Based on [Jakub Stasiak](https://github.com/jstasiak/dejector) similar work. 
+
+
+Simple dependency injection framework for D.
+
+Based on [Jakub Stasiak](https://github.com/jstasiak/dejector) similar work.
 
 ## Example usage
 ``` d
@@ -33,7 +39,7 @@ Output:
 See also directory `tests/` and [wiki](https://github.com/o3o/endovena/wiki).
 
 ## Compiling
-You can use [dub](https://github.com/rejectedsoftware/dub): 
+You can use [dub](https://github.com/rejectedsoftware/dub):
 ```
 $ dub build
 ```
@@ -60,7 +66,7 @@ $ make
 * [poodinis](https://github.com/mbierlee/poodinis)
 
 ## References
-* [dryioc](https://bitbucket.org/dadhi/dryioc) C# IoC 
+* [dryioc](https://bitbucket.org/dadhi/dryioc) C# IoC
 * [unit-threaded](https://github.com/atilaneves/unit-threaded) Multi-threaded unit test framework for D.
 
 ## License
