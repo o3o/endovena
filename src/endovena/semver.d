@@ -1,4 +1,4 @@
 module endovena.semver;
 
-enum VERSION = "0.3.3";
+enum VERSION = "0.3.4";
 enum TAG_VERSION = "v" ~ VERSION;
