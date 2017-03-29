@@ -1,5 +1,4 @@
-# makefile release 0.4.0
-
+# makefile release 0.5.0
 PROJECT_VERSION = $(getVer)
 
 #############
@@ -16,15 +15,9 @@ SRC = $(getSources)
 #############
 # Names     #
 #############
-SDL_FILE = dub.sdl
-ifneq ("$(wildcard $(SDL_FILE))","")
 NAME = $(getNameSdl)
-else
-NAME = $(getNameJson)
-SDL_FILE = dub.json
-endif
-
 BIN_NAME = $(BIN)/lib$(NAME).a
+
 #############
 # Packages  #
 #############
@@ -35,10 +28,10 @@ ZIP_PREFIX = $(NAME)-$(PROJECT_VERSION)
 
 
 getSources = $(shell find $(ROOT_SOURCE_DIR) -name "*.d")
+
 getVer = $(shell ag -o --nofilename '\d+\.\d+\.\d+(-\w+\.\d)?' $(ROOT_SOURCE_DIR)/$(NAME)/semver.d)
 #http://stackoverflow.com/questions/1546711/can-grep-show-only-words-that-match-search-pattern#1546735
 getNameSdl = $(shell ag -m1 --silent -o 'name\s+\"\K\w+' dub.sdl)
-getNameJson = $(shell ag -o -m1 '\"name\":\s+\"\K[[:alpha:]]+' dub.json)
 
 #############
 # Commands  #
@@ -54,6 +47,8 @@ UPX = upx --no-progress
 #############
 # per impostatare la configurazione conf
 # make c=conf
+# per debug
+# make b=debug
 CONFIG += $(if $(c), -c$(c))
 BUILD += $(if $(b), -b$(b))
 # make run s=timer:countdown
@@ -73,11 +68,13 @@ DEFAULT: all
 
 all:
 	$(DUB) build $(DUBFLAGS)
+
 build-ldc:
 	$(DUB) build $(DUBFLAGS) --compiler=ldc
 
 release:
 	$(DUB) build -brelease $(DUBFLAGS)
+
 rel-ldc:
 	$(DUB) build -brelease --compiler=ldc $(DUBFLAGS)
 
@@ -86,7 +83,6 @@ force:
 
 run:
 	$(DUB) run $(DUBFLAGS)
-
 run-rel:
 	$(DUB) run -brelease $(DUBFLAGS)
 
@@ -102,6 +98,8 @@ testl:
 btest:
 	$(DUB) build -cunittest -q
 
+dx: all upx
+rx: release upx
 upx: $(BIN)/$(NAME)
 	$(UPX) $^
 
@@ -124,6 +122,7 @@ pkgsrc: pkgdir | pkg/$(ZIP_PREFIX)-src.tar.bz2
 
 pkg/$(ZIP_PREFIX)-src.tar.bz2: $(ZIP_SRC)
 	tar -jcf $@ $^
+
 up:
 	$(DUB) upgrade
 
@@ -139,6 +138,9 @@ syn: $(SRC)
 loc: $(SRC)
 	$(DSCAN) --sloc $^
 
+imp: $(SRC)
+	$(DSCAN) -i $^
+
 clean:
 	$(DUB) clean
 
@@ -148,11 +150,15 @@ clobber: clean
 	$(RM) $(BIN)/test-runner
 
 pb:
-	@$(DUB) build  --print-builds
+	@$(DUB) build --print-builds
 pc:
-	$(DUB) build  --print-configs
+	$(DUB) build --print-configs
 pp:
-	$(DUB) build  --print-platform
+	$(DUB) build --print-platform
+
+changelog: CHANGELOG.txt
+CHANGELOG.txt: CHANGELOG.md
+	pandoc -f markdown_github -t plain $^ > $@
 
 ver:
 	@echo $(PROJECT_VERSION)
@@ -173,7 +179,7 @@ var:
 	@echo "BIN             :" $(BIN)
 	@echo "ROOT_SOURCE_DIR :" $(ROOT_SOURCE_DIR)
 	@echo "TEST_SOURCE_DIR :" $(TEST_SOURCE_DIR)
-	@echo 
+	@echo
 	@echo "Zip"
 	@echo "--------------------"
 	@echo "ZIP_BIN    : " $(ZIP_BIN)
