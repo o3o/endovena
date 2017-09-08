@@ -153,7 +153,7 @@ void given_service_registred_by_instance_Get_interface_should_throw() {
 
 @UnitTest
 void given_services_registred_by_instance_and_interface_Get_should_works() {
-   Container container = new Container; 
+   Container container = new Container;
    container.register!Greeter;
    container.register!(IGreeter,Greeter);
 
@@ -162,4 +162,85 @@ void given_services_registred_by_instance_and_interface_Get_should_works() {
    auto iservice = container.get!IGreeter();
    iservice.shouldNotBeNull;
    assert(iservice !is service);
+}
+
+
+///mvc
+
+import std.signals;
+class Model {
+   private int _value;
+   @property int value() { return _value; }
+   @property void value(int value) {
+      if (_value != value) {
+         _value = value;
+         modelChanged.emit();
+      }
+   }
+   void inc() {
+      writeln("inc from ", _value);
+
+      this.value = this.value + 1;
+   }
+
+   mixin Signal modelChanged;
+}
+
+import std.stdio;
+class Controller {
+   private Model m;
+   this(Model m) {
+      this.m = m;
+   }
+
+   void addOne() {
+      writefln("model curr value %s", m.value);
+
+      m.inc();
+   }
+}
+
+class View {
+   private Model m;
+   private Controller ctrl;
+   this(Model m) {
+      this.m = m;
+      ctrl = new Controller(m);
+      m.modelChanged.connect(&notify);
+   }
+
+   void mouseReleasEvent() {
+      ctrl.addOne();
+   }
+
+   void notify() {
+      _calls++;
+   }
+
+   private int _calls;
+   @property int calls() { return _calls; }
+}
+
+@UnitTest
+void should_create_mvv() {
+   Container container = new Container;
+   container.register!(Model, Singleton);
+   container.register!View;
+
+   auto v = container.get!View();
+   v.shouldNotBeNull;
+   v.calls.shouldEqual(0);
+
+   auto m = container.get!Model();
+   m.shouldNotBeNull;
+   m.value = 42; // genera un evenot
+   v.calls.shouldEqual(1);
+   m.value.shouldEqual(42);
+
+   v.mouseReleasEvent();
+   m.value.shouldEqual(43);
+   v.calls.shouldEqual(2);
+
+   m.inc();
+   v.calls.shouldEqual(3);
 }
