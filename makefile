@@ -157,8 +157,8 @@ CHANGELOG.txt: CHANGELOG.md
 	pandoc -f markdown_github -t plain $^ > $@
 
 changelog: CHANGELOG.txt
-CHANGELOG.txt: CHANGELOG.md
 	pandoc -f markdown_github -t plain $^ > $@
+
 ver:
 	@echo $(PROJECT_VERSION)
 
