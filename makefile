@@ -1,5 +1,4 @@
 # makefile release 0.6.0
-
 PROJECT_VERSION = $(getVer)
 
 #############
@@ -17,8 +16,8 @@ SRC = $(getSources)
 # Names     #
 #############
 NAME = $(getNameSdl)
-
 BIN_NAME = $(BIN)/lib$(NAME).a
+
 #############
 # Packages  #
 #############
@@ -32,6 +31,7 @@ ZIP_PREFIX = $(NAME)-$(PROJECT_VERSION)
 # Funcs     #
 #############
 getSources = $(shell find $(ROOT_SOURCE_DIR) -name "*.d")
+
 getVer = $(shell ag -o --nofilename '\d+\.\d+\.\d+(-\w+\.\d)?' $(ROOT_SOURCE_DIR)/$(NAME)/semver.d)
 #http://stackoverflow.com/questions/1546711/can-grep-show-only-words-that-match-search-pattern#1546735
 getNameSdl = $(shell ag -m1 --silent -o 'name\s+\"\K\w+' dub.sdl)
@@ -50,6 +50,8 @@ UPX = upx --no-progress
 #############
 # per impostatare la configurazione conf
 # make c=conf
+# per debug
+# make b=debug
 CONFIG += $(if $(c), -c$(c))
 ## Per impostare modalita release
 ## make rel=y
@@ -81,7 +83,6 @@ force:
 
 run: build
 	$(DUB) run $(DUBFLAGS)
-
 
 test:
 	$(DUB) test -q $(SEP) $(WHERE)
@@ -117,6 +118,7 @@ pkgsrc: pkgdir | pkg/$(ZIP_PREFIX)-src.tar.bz2
 
 pkg/$(ZIP_PREFIX)-src.tar.bz2: $(ZIP_SRC)
 	tar -jcf $@ $^
+
 up:
 	$(DUB) upgrade
 
@@ -132,6 +134,9 @@ syn: $(SRC)
 loc: $(SRC)
 	$(DSCAN) --sloc $^
 
+imp: $(SRC)
+	$(DSCAN) -i $^
+
 clean:
 	$(DUB) clean
 
@@ -141,11 +146,15 @@ clobber: clean
 	$(RM) $(BIN)/test-runner
 
 pb:
-	@$(DUB) build  --print-builds
+	@$(DUB) build --print-builds
 pc:
-	$(DUB) build  --print-configs
+	$(DUB) build --print-configs
 pp:
-	$(DUB) build  --print-platform
+	$(DUB) build --print-platform
+
+changelog: CHANGELOG.txt
+CHANGELOG.txt: CHANGELOG.md
+	pandoc -f markdown_github -t plain $^ > $@
 
 changelog: CHANGELOG.txt
 CHANGELOG.txt: CHANGELOG.md
